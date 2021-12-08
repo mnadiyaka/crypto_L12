@@ -8,7 +8,6 @@ import java.util.stream.IntStream;
 public class Main {
     static final BigInteger maxInt = new BigInteger("2").pow(32);
 
-    //first 32 bits of the fractional parts of the square roots of the first 8 primes 2..19
     static final String[] hash = {
             hexToBin32("6A09E667"),
             hexToBin32("BB67AE85"),
@@ -20,7 +19,6 @@ public class Main {
             hexToBin32("5BE0CD19")
     };
 
-    //Array of round constants: first 32 bits of the fractional parts of the cube roots of the first 64 primes 2..311
     static final String[] k_hex = {
             "428a2f98", "71374491", "b5c0fbcf", "e9b5dba5", "3956c25b", "59f111f1", "923f82a4", "ab1c5ed5",
             "d807aa98", "12835b01", "243185be", "550c7dc3", "72be5d74", "80deb1fe", "9bdc06a7", "c19bf174",
@@ -32,15 +30,10 @@ public class Main {
             "748f82ee", "78a5636f", "84c87814", "8cc70208", "90befffa", "a4506ceb", "bef9a3f7", "c67178f2"
     };
 
-    /**
-     * @param bytes The input to process
-     * @return The sha256 as bytes
-     */
     public static String digest(String bytes) {
-        String preprocessedInput = bytes;//preprocess(bytesToBinaryString(bytes));
+        String preprocessedInput = bytes;
         String chunks[] = split(preprocessedInput, 512);
 
-        //System.out.println(preprocessedInput);
 
         String[] hash = copyArray(Main.hash);
 
@@ -95,22 +88,7 @@ public class Main {
             hash[7] = sum32(hash[7], h);
         }
         String digest = hash[0] + hash[1] + hash[2] + hash[3] + hash[4] + hash[5] + hash[6] + hash[7];
-        return digest;//binaryStringToBytes(digest);
-    }
-
-    private static String preprocess(String bin) {
-        int length = bin.length();
-        StringBuilder strb = new StringBuilder(bin);
-        strb.append("1");
-        for (int i = 0; i < 512; i++) {
-            if ((strb.length() + 64) % 512 == 0) {
-                break;
-            }
-            strb.append("0");
-        }
-        strb.append(normalizeTo64Bit(BigInteger.valueOf(length).toString(2)));
-        bin = strb.toString();
-        return bin;
+        return digest;
     }
 
     private static String not32(String bin) {
@@ -186,16 +164,6 @@ public class Main {
         return data;
     }
 
-    private static byte[] binaryStringToBytes(String bin) {
-        byte[] array = new BigInteger(bin, 2).toByteArray();
-        if (array[0] == 0) {
-            byte[] tmp = new byte[array.length - 1];
-            System.arraycopy(array, 1, tmp, 0, tmp.length);
-            array = tmp;
-        }
-        return array;
-    }
-
     private static String intToBinaryString(int[] bytes) {
         String bin = "";
         for (int b : bytes) {
@@ -211,7 +179,8 @@ public class Main {
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        String s = "hello world";
+        System.out.println("Type in data: ");
+        String s = sc.nextLine();
         int[] data = stringToInt(s);
         String ss = intToBinaryString(data);
         System.out.println();
@@ -222,10 +191,6 @@ public class Main {
             myHesh = myHesh+Integer.toHexString(Integer.parseInt(res.substring(i,i+4),2));
         }
         System.out.println(myHesh);
-//        byte[] myHash= digest(ss);
-//        for (byte b:myHash){
-//            System.out.println(b);
-//        }
-//        System.out.println(myHash);
+
     }
 }
